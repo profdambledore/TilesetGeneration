@@ -4,24 +4,28 @@
 
 #include "CoreMinimal.h"
 
-#include "Engine/DataTable.h"
+#include "Core/Tile.h"
 
-#include "TileData.generated.h"
+#include "TileNode.generated.h"
 
 USTRUCT(BlueprintType)
-struct TILESETGENERATION_API FTileData : public FTableRowBase
+struct TILESETGENERATION_API FTileNode
 {
 public:
 	GENERATED_BODY();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class ATile> Class;
+	class ATile* Tile;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FName> Tags;
+	int Parent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, int> Children;
+
 
 	// Constructors / Destructors
-	FTileData();
-	~FTileData();
+	FTileNode();
+	FTileNode(ATile* NewTile, int NewParent);
+	~FTileNode();
 };
-

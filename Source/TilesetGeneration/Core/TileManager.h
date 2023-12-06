@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
+#include "Engine/DataTable.h"
+
 #include "Core/Data/TileData.h"
+#include "Core/Data/TileNode.h"
 
 #include "TileManager.generated.h"
 
@@ -24,7 +27,7 @@ public:
 
 	/// -- Generation ---
 	// Called to genearte a level with the current tile setting.  Will not work if a level is already generated
-	//void GenerateTileLevel();
+	void GenerateTileLevel();
 
 	// Called to clear the current generated level.  Will not work if no level is generated
 	//void ClearTileLevel();
@@ -71,12 +74,17 @@ protected:
 public:	
 	/// -- Tile Settings --
 	// Data Table of all tile
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
+	UDataTable* TileDataTable = nullptr;
 
 	// 
 
 	/// -- Tree --
 	// The level tree
-	//TArray<NODEDATA> GeneratedTree;
+	TArray<FTileNode> GeneratedTree;
+
+	// Pointer to the current node in use
+	FTileNode* CurrentNode = nullptr;
 
 	/// -- Tree Data --
 	// The maximum branch length of the tree

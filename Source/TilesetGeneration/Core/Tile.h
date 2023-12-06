@@ -4,6 +4,9 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+
+#include "Core/Data/TileDoorType.h"
+
 #include "Tile.generated.h"
 
 UCLASS()
@@ -27,5 +30,8 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TMap<FName, TEnumAsByte<ETileDoorType>> Doors;
 
+	TMap<FName, class UTileDoorPosition*> DoorPositions;
 };
