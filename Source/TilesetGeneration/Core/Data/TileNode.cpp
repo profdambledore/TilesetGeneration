@@ -9,6 +9,8 @@ FTileNode::FTileNode()
 
 FTileNode::FTileNode(ATile* NewTile, int NewParent)
 {
+	Tile = NewTile;
+	Parent = NewParent;
 }
 
 FTileNode::~FTileNode()

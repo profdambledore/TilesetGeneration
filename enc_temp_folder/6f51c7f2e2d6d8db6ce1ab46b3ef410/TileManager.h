@@ -46,7 +46,7 @@ public:
 	//void SetTileSettings();
 
 	// Called to return all tile data rows which contain a tag
-	TSubclassOf<ATile> GetTileMatchingTag(FName Tag);
+	//TSubclassOf<ATile> GetTileMatchingTag(FName Tag);
 
 	/// -- Tree Settings --
 	// Called to return the current tree settings
@@ -84,7 +84,6 @@ public:
 
 	/// -- Tree --
 	// The level tree
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
 	TArray<FTileNode> GeneratedTree;
 
 	// Pointer to the current node in use

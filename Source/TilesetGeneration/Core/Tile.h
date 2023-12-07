@@ -25,6 +25,10 @@ public:
 	/// -- Generation --
 	// Called to get the positions of this tiles connectors
 
+	// Called to get all the TileDoorPositions and push them into the maps
+	UFUNCTION(BlueprintCallable)
+	void GetTileDoorPositions();
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

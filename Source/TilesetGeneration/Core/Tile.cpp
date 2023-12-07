@@ -10,15 +10,7 @@ ATile::ATile()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = false;
 
-	// Get all TileDoorPositions attached to this Tile
-	TArray<UTileDoorPosition*> TDP;
-	GetComponents<UTileDoorPosition>(TDP);
-
-	// Then sort them into the maps
-	for (UTileDoorPosition* i : TDP) {
-		DoorPositions.Add(i->Name, i);
-		Doors.Add(i->Name, i->Type);
-	}
+	//Testewr();
 
 }
 
@@ -34,5 +26,23 @@ void ATile::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+void ATile::GetTileDoorPositions()
+{
+	// Check if the maps are empty.  If they are, then...
+	if (DoorPositions.Num() == 0) {
+		// Get all TileDoorPositions attached to this Tile
+		TArray<UTileDoorPosition*> TDP;
+		GetComponents<UTileDoorPosition>(TDP);
+
+		UE_LOG(LogTemp, Warning, TEXT("TileDoorPositions found : %i"), TDP.Num());
+
+		// Then sort them into the maps
+		for (UTileDoorPosition* i : TDP) {
+			DoorPositions.Add(i->Name, i);
+			Doors.Add(i->Name, i->Type);
+		}
+	}
 }
 
