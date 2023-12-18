@@ -3,7 +3,6 @@
 
 #include "Core/TileManager.h"
 #include "Core/Tile.h"
-#include "Core/TileDoorPosition.h"
 
 // Sets default values
 ATileManager::ATileManager()
@@ -43,7 +42,7 @@ void ATileManager::GenerateTileLevel()
 	if (TileDataTable) {
 		// First, create the starting tile
 		// Start by finding a tile with the "Start" tag
-		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 20.0f, 0.0f));
+		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")), FVector(0.0f, 0.0f, 0.0f), FRotator());
 		AddTreeNode(NewestTile);
 
 		ParentTile = NewestTile;
@@ -59,15 +58,6 @@ void ATileManager::GenerateTileLevel()
 			// Get a random doorway in that tile that matches the current door type and connect it to the parent
 			int DoorIndex = NewestTile->GetMatchingDoorPosition(ParentTile->Doors[i].Type);
 			GeneratedTree[CurrentNode + i + 1].Children.Add(NewestTile->Doors[DoorIndex].Name, CurrentNode);
-
-			// Rotate the new tile to match the doorway
-			NewestTile->AddActorLocalRotation(ParentTile->Doors[i].Object->GetRelativeRotation() + ParentTile->GetActorRotation());
-			NewestTile->AddActorLocalRotation(NewestTile->Doors[DoorIndex].Object->GetRelativeRotation());
-
-			// Finaly, move the new tile 
-			NewestTile->AddActorWorldOffset(ParentTile->Doors[i].Object->GetComponentLocation() - NewestTile->Doors[DoorIndex].Object->GetComponentLocation());
-
-			
 		}
 	}
 }
