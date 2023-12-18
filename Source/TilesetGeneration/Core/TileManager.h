@@ -9,6 +9,7 @@
 
 #include "Core/Data/TileData.h"
 #include "Core/Data/TileNode.h"
+#include "Core/Data/TileDoorType.h"
 
 #include "TileManager.generated.h"
 
@@ -45,8 +46,11 @@ public:
 	// Called to update the current tile settings.  Will not regenerate the level.
 	//void SetTileSettings();
 
-	// Called to return all tile data rows which contain a tag
+	// Called to find a tile from the data table that contain a tag
 	TSubclassOf<ATile> GetTileMatchingTag(FName Tag);
+
+	// Called to find a tile from the data table that contain a door type
+	TSubclassOf<ATile> GetTileMatchingDoor(TEnumAsByte<ETileDoorType> DoorType);
 
 	/// -- Tree Settings --
 	// Called to return the current tree settings

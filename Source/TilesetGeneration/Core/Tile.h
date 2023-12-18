@@ -6,6 +6,7 @@
 #include "GameFramework/Actor.h"
 
 #include "Core/Data/TileDoorType.h"
+#include "Core/Data/DoorData.h"
 
 #include "Tile.generated.h"
 
@@ -25,9 +26,13 @@ public:
 	/// -- Generation --
 	// Called to get the positions of this tiles connectors
 
-	// Called to get all the TileDoorPositions and push them into the maps
+	// Called to get all the TileDoorPositions and push them into the array
 	UFUNCTION(BlueprintCallable)
 	void GetTileDoorPositions();
+
+	// Called to return a random TileDoorPosition that matches an inputted door type
+	int GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType);
+
 
 protected:
 	// Called when the game starts or when spawned
@@ -35,7 +40,5 @@ protected:
 
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TMap<FName, TEnumAsByte<ETileDoorType>> Doors;
-
-	TMap<FName, class UTileDoorPosition*> DoorPositions;
+	TArray<FDoorData> Doors;
 };

@@ -4,29 +4,27 @@
 
 #include "CoreMinimal.h"
 
-#include "Engine/DataTable.h"
-
 #include "Core/Data/TileDoorType.h"
 
-#include "TileData.generated.h"
+#include "DoorData.generated.h"
 
 USTRUCT(BlueprintType)
-struct TILESETGENERATION_API FTileData : public FTableRowBase
+struct TILESETGENERATION_API FDoorData
 {
 public:
 	GENERATED_BODY();
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TSubclassOf<class ATile> Class;
+	FName Name;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<FName> Tags;
+	TEnumAsByte<ETileDoorType> Type;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TArray<TEnumAsByte<ETileDoorType>> Doors;
+	class UTileDoorPosition* Object;
 
-	// Constructors / Destructors
-	FTileData();
-	~FTileData();
+
+	FDoorData();
+	FDoorData(FName InName, TEnumAsByte<ETileDoorType> InType, UTileDoorPosition* InObject);
+	~FDoorData();
 };
-

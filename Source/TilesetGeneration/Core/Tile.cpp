@@ -31,7 +31,7 @@ void ATile::Tick(float DeltaTime)
 void ATile::GetTileDoorPositions()
 {
 	// Check if the maps are empty.  If they are, then...
-	if (DoorPositions.Num() == 0) {
+	if (Doors.Num() == 0) {
 		// Get all TileDoorPositions attached to this Tile
 		TArray<UTileDoorPosition*> TDP;
 		GetComponents<UTileDoorPosition>(TDP);
@@ -40,9 +40,27 @@ void ATile::GetTileDoorPositions()
 
 		// Then sort them into the maps
 		for (UTileDoorPosition* i : TDP) {
-			DoorPositions.Add(i->Name, i);
-			Doors.Add(i->Name, i->Type);
+			Doors.Add(FDoorData(i->Name, i->Type, i));
 		}
 	}
+}
+
+int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType)
+{
+	int MatchingDoors = 0;
+
+	for (FDoorData i : Doors) {
+		if (i.Type == InType) {
+			MatchingDoors++;
+		}
+	}
+
+	if (MatchingDoors > 0) {
+		int ran = FMath::RandRange(0, MatchingDoors - 1);
+		UE_LOG(LogTemp, Warning, TEXT("ran is equal to %i"), ran);
+		return ran;
+	}
+	UE_LOG(LogTemp, Warning, TEXT("out of band"));
+	return 0;
 }
 
