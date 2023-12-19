@@ -23,13 +23,15 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int Parent;
 
-	// Array of 
+	// Array of FTileChildren, which contain details of this tiles chiildren
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FTileChildren> Children;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int Depth;
 
 	// Constructors / Destructors
 	FTileNode();
-	FTileNode(ATile* NewTile, int NewParent);
+	FTileNode(ATile* NewTile, int NewParent, int NewDepth);
 	~FTileNode();
 };

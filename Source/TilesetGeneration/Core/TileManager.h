@@ -102,7 +102,7 @@ public:
 
 	/// -- Tree Data --
 	// The maximum branch length of the tree
-	int MaxBranchLength = 6;
+	int MaxBranchLength = 3;
 	// 
 	// The maximum amount of nodes in the tree
 	//int MaxNodes = 10; 

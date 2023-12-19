@@ -36,15 +36,24 @@ void ATileManager::Tick(float DeltaTime)
 
 void ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIndex)
 {
-	// Spawn a new child tile with a matching door, add it to the tree and update the parent
-	ATile* ChildTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingDoor(DoorType), FVector(0.0f, 0.0f, 0.0f), FRotator());
-	AddTreeNode(ChildTile);
-	GeneratedTree[CurrentNode].Children[ChildIndex].IndexToTile = GeneratedTree.Num() - 1;
+	if ((GeneratedTree[CurrentNode].Depth + 1) < MaxBranchLength) {
+		// Spawn a new child tile with a matching door, add it to the tree and update the parent
+		ATile* ChildTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingDoor(DoorType), FVector(0.0f, 0.0f, 0.0f), FRotator());
+		AddTreeNode(ChildTile);
+		GeneratedTree[CurrentNode].Children[ChildIndex].IndexToTile = GeneratedTree.Num() - 1;
 
-	// Get a random doorway in that tile that matches the current door type and connect it to the parent
-	int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType);
-	GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
+		// Get a random doorway in that tile that matches the current door type and connect it to the parent
+		int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType);
+		GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
 
+		// Rotate the new tile to match the doorway
+		ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->GetActorRotation() + GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation());
+		ChildTile->AddActorLocalRotation(ChildTile->Doors[DoorIndex].Object->GetRelativeRotation());
+
+		// Finaly, move the new tile 
+		ChildTile->AddActorWorldOffset(GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetComponentLocation() - ChildTile->Doors[DoorIndex].Object->GetComponentLocation());
+	}
+	
 }
 
 void ATileManager::GenerateTileLevel()
@@ -63,7 +72,7 @@ void ATileManager::GenerateTileLevel()
 		CurrentBranchLength++;
 
 		// For each node in the tree
-		for (int i = 0; i < 1; i++) { //GeneratedTree.Num()
+		for (int i = 0; i < 2 ; i++) { //GeneratedTree.Num()
 			CurrentNode = i;
 			// For each child node of node i
 			for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
@@ -141,7 +150,7 @@ TSubclassOf<ATile> ATileManager::GetTileMatchingDoor(TEnumAsByte<ETileDoorType> 
 bool ATileManager::AddTreeNode(ATile* NewTile)
 {
 	if (NewTile) {
-		FTileNode NewNode = FTileNode(NewTile, CurrentNode);
+		FTileNode NewNode = FTileNode(NewTile, CurrentNode, GeneratedTree[CurrentNode].Depth +1);
 
 		for (int i = 0; i < NewTile->Doors.Num(); i++) {
 			NewNode.Children.Add(FTileChildren(NewTile->Doors[i].Name, NewTile->Doors[i].Type, -1));

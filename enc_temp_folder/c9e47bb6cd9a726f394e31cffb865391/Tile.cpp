@@ -48,18 +48,17 @@ void ATile::GetTileDoorPositions()
 int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType)
 {
 	int MatchingDoors = 0;
-	TArray<int> indec;
 
-	for (int i = 0; i < Doors.Num(); i++) {
-		if (Doors[i].Type == InType) {
-			indec.Add(i);
+	for (FDoorData i : Doors) {
+		if (i.Type == InType) {
+			MatchingDoors++;
 		}
 	}
 
-	if (indec.Num() > 0) {
-		int ran = FMath::RandRange(0, indec.Num() - 1);
+	if (MatchingDoors > 0) {
+		int ran = FMath::RandRange(0, MatchingDoors - 1);
 		UE_LOG(LogTemp, Warning, TEXT("%s"), *Doors[ran].Name.ToString());
-		return indec[ran];
+		return ran;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("out of band"));
 	return 0;

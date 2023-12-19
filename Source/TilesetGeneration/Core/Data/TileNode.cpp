@@ -7,10 +7,11 @@ FTileNode::FTileNode()
 {
 }
 
-FTileNode::FTileNode(ATile* NewTile, int NewParent)
+FTileNode::FTileNode(ATile* NewTile, int NewParent, int NewDepth)
 {
 	Tile = NewTile;
 	Parent = NewParent;
+	Depth = NewDepth;
 }
 
 FTileNode::~FTileNode()
