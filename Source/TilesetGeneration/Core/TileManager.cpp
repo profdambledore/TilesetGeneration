@@ -4,6 +4,7 @@
 #include "Core/TileManager.h"
 #include "Core/Tile.h"
 #include "Core/TileDoorPosition.h"
+#include "Core/Data/TileChildren.h"
 
 // Sets default values
 ATileManager::ATileManager()
@@ -33,10 +34,29 @@ void ATileManager::Tick(float DeltaTime)
 
 }
 
+void ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIndex)
+{
+	// Spawn a new child tile with a matching door, add it to the tree and update the parent
+	ATile* ChildTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingDoor(DoorType), FVector(0.0f, 0.0f, 0.0f), FRotator());
+	AddTreeNode(ChildTile);
+	GeneratedTree[CurrentNode].Children[ChildIndex].IndexToTile = GeneratedTree.Num() - 1;
+
+	// Get a random doorway in that tile that matches the current door type and connect it to the parent
+	int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType);
+	GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
+
+	// Rotate the new tile to match the doorway
+	ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->GetActorRotation() + GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation());
+	ChildTile->AddActorLocalRotation(ChildTile->Doors[DoorIndex].Object->GetRelativeRotation());
+
+	// Finaly, move the new tile 
+	ChildTile->AddActorWorldOffset(GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetComponentLocation() - ChildTile->Doors[DoorIndex].Object->GetComponentLocation());
+}
+
 void ATileManager::GenerateTileLevel()
 {
 	ATile* NewestTile = nullptr;
-	ATile* ParentTile = nullptr;
+	//ATile* ParentTile = nullptr;
 
 	UE_LOG(LogTemp, Warning, TEXT("Generating"));
 
@@ -46,28 +66,18 @@ void ATileManager::GenerateTileLevel()
 		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 20.0f, 0.0f));
 		AddTreeNode(NewestTile);
 
-		ParentTile = NewestTile;
-		CurrentNode = 0;
+		CurrentBranchLength++;
 
-		// Then, for each doorway in the spawn tile, create a child tile and connect them together
-		for (int i = 0; i < ParentTile->Doors.Num(); i++) {
-			// Find a tile with a door and spawn it
-			NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingDoor(ParentTile->Doors[i].Type), FVector(0.0f, 0.0f, 0.0f), FRotator());
-			AddTreeNode(NewestTile);
-			GeneratedTree[CurrentNode].Children.Add(ParentTile->Doors[0].Name, GeneratedTree.Num() - 1);
-
-			// Get a random doorway in that tile that matches the current door type and connect it to the parent
-			int DoorIndex = NewestTile->GetMatchingDoorPosition(ParentTile->Doors[i].Type);
-			GeneratedTree[CurrentNode + i + 1].Children.Add(NewestTile->Doors[DoorIndex].Name, CurrentNode);
-
-			// Rotate the new tile to match the doorway
-			NewestTile->AddActorLocalRotation(ParentTile->Doors[i].Object->GetRelativeRotation() + ParentTile->GetActorRotation());
-			NewestTile->AddActorLocalRotation(NewestTile->Doors[DoorIndex].Object->GetRelativeRotation());
-
-			// Finaly, move the new tile 
-			NewestTile->AddActorWorldOffset(ParentTile->Doors[i].Object->GetComponentLocation() - NewestTile->Doors[DoorIndex].Object->GetComponentLocation());
-
-			
+		// For each node in the tree
+		for (int i = 0; i < GeneratedTree.Num(); i++) { //
+			CurrentNode = i;
+			// For each child node of node i
+			for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
+				// Generate a new tile
+				if (GeneratedTree[i].Children[j].IndexToTile == -1) {
+					GenerateNode(GeneratedTree[i].Children[j].Type, j);
+				}
+			}
 		}
 	}
 }
@@ -140,7 +150,7 @@ bool ATileManager::AddTreeNode(ATile* NewTile)
 		FTileNode NewNode = FTileNode(NewTile, CurrentNode);
 
 		for (int i = 0; i < NewTile->Doors.Num(); i++) {
-			NewNode.Children.Add(NewTile->Doors[i].Name, -1);
+			NewNode.Children.Add(FTileChildren(NewTile->Doors[i].Name, NewTile->Doors[i].Type, -1));
 		}
 
 		GeneratedTree.Add(NewNode);

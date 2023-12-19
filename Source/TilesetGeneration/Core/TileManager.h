@@ -28,6 +28,9 @@ public:
 	virtual void Tick(float DeltaTime) override;
 
 	/// -- Generation ---
+	// Called to generate a tile
+	void GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIndex);
+
 	// Called to genearte a level with the current tile setting.  Will not work if a level is already generated
 	void GenerateTileLevel();
 
@@ -95,9 +98,11 @@ public:
 	// Pointer to the current node in use
 	int CurrentNode = -1;
 
+	int CurrentBranchLength = 0;
+
 	/// -- Tree Data --
 	// The maximum branch length of the tree
-	//int MaxBranchLength = 6;
+	int MaxBranchLength = 6;
 	// 
 	// The maximum amount of nodes in the tree
 	//int MaxNodes = 10; 

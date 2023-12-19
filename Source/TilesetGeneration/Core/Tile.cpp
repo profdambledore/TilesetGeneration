@@ -57,7 +57,7 @@ int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType)
 
 	if (MatchingDoors > 0) {
 		int ran = FMath::RandRange(0, MatchingDoors - 1);
-		UE_LOG(LogTemp, Warning, TEXT("ran is equal to %i"), ran);
+		UE_LOG(LogTemp, Warning, TEXT("%s"), *Doors[ran].Name.ToString());
 		return ran;
 	}
 	UE_LOG(LogTemp, Warning, TEXT("out of band"));
