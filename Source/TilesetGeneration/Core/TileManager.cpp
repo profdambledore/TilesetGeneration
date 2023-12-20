@@ -24,7 +24,7 @@ void ATileManager::BeginPlay()
 	Super::BeginPlay();
 
 	GenerateTileLevel();
-	ClearTileLevel();
+	//ClearTileLevel();
 }
 
 // Called every frame
@@ -46,9 +46,35 @@ void ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIn
 		int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType);
 		GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
 
-		// Rotate the new tile to match the doorway
-		ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->GetActorRotation() + GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation());
-		ChildTile->AddActorLocalRotation(ChildTile->Doors[DoorIndex].Object->GetRelativeRotation());
+		// Add the parent tile's offset to the new tile
+		ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->GetActorRotation()); //GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation()
+		ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation());
+
+		// Find the dot product between the child tile doorway and the parent tile doorway
+		FVector VecA = GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetForwardVector();
+		VecA.Normalize();
+
+		FVector VecB = ChildTile->Doors[DoorIndex].Object->GetForwardVector();
+		VecB.Normalize();
+
+		float OutAngle = FMath::RadiansToDegrees(acosf(FVector::DotProduct(VecA, VecB)));
+
+		//UE_LOG(LogTemp, Warning, TEXT("outangle = %f"), OutAngle);
+		//UE_LOG(LogTemp, Warning, TEXT("corss z = %f"), FVector::CrossProduct(VecA, VecB).Z);
+
+		// Calculate the cross product to determin what direction to rotate in
+		// https://forums.unrealengine.com/t/how-to-get-an-angle-between-2-vectors/280850/39
+		if (FVector::CrossProduct(VecA, VecB).Z > 0) 
+		{
+			OutAngle = -OutAngle;
+		}
+
+		//UE_LOG(LogTemp, Warning, TEXT("outangle after cross = %f"), OutAngle);
+
+		// Rotate the tile so it is now facing the door
+		ChildTile->AddActorLocalRotation(FRotator(0.0f, 180.0f, 0.0f));
+
+		ChildTile->AddActorLocalRotation(FRotator(0.0f, OutAngle, 0.0f));
 
 		// Finaly, move the new tile 
 		ChildTile->AddActorWorldOffset(GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetComponentLocation() - ChildTile->Doors[DoorIndex].Object->GetComponentLocation());
@@ -63,10 +89,14 @@ void ATileManager::GenerateTileLevel()
 
 	UE_LOG(LogTemp, Warning, TEXT("Generating"));
 
+	// Make a new random seed
+	CurrentSeed = FMath::RandRange(0, 2000);
+	SeedStream = FRandomStream(CurrentSeed);
+
 	if (TileDataTable) {
 		// First, create the starting tile
 		// Start by finding a tile with the "Start" tag
-		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 20.0f, 0.0f));
+		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")), FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		AddTreeNode(NewestTile);
 
 		CurrentBranchLength++;

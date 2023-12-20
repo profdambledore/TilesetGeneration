@@ -7,6 +7,7 @@
 
 #include "Engine/DataTable.h"
 #include "Kismet/KismetMathLibrary.h"
+#include "Math/RandomStream.h"
 
 #include "Core/Data/TileData.h"
 #include "Core/Data/TileNode.h"
@@ -88,11 +89,18 @@ public:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
 	UDataTable* TileDataTable = nullptr;
 
-	// 
+	/// -- Seed Settings --
+	// Struct holding seed information
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Seed");
+	FRandomStream SeedStream;
+
+	// The current seed in use
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Seed");
+	int CurrentSeed;
 
 	/// -- Tree --
 	// The level tree
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Tree");
 	TArray<FTileNode> GeneratedTree;
 
 	// Pointer to the current node in use
