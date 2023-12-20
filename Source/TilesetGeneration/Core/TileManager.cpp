@@ -24,7 +24,7 @@ void ATileManager::BeginPlay()
 	Super::BeginPlay();
 
 	GenerateTileLevel();
-	
+	ClearTileLevel();
 }
 
 // Called every frame
@@ -83,6 +83,28 @@ void ATileManager::GenerateTileLevel()
 			}
 		}
 	}
+}
+
+void ATileManager::ClearTileLevel()
+{
+	if (GeneratedTree.Num() != 0) {
+		// Iterate backwards through the tree from the final node, deleting every node and tile
+		for (int i = GeneratedTree.Num() - 1; i > -1; i--) {
+			GeneratedTree[i].Tile->Destroy();
+		}
+
+		// Garbage collect
+		GEngine->ForceGarbageCollection();
+
+		// Clear the tree
+		GeneratedTree.Empty();
+	}
+}
+
+void ATileManager::RegenerateTileLevel()
+{
+	ClearTileLevel();
+	GenerateTileLevel();
 }
 
 TSubclassOf<ATile> ATileManager::GetTileMatchingTag(FName Tag)

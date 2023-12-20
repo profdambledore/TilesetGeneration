@@ -35,10 +35,10 @@ public:
 	void GenerateTileLevel();
 
 	// Called to clear the current generated level.  Will not work if no level is generated
-	//void ClearTileLevel();
+	void ClearTileLevel();
 
 	// Called to clear a generated level and generate a new one with the current tile setting.  Requires a level to be generated already. 
-	//void RegenerateTileLevel();
+	void RegenerateTileLevel();
 
 	// Called to generate a level via seed data.  Will update the tile and tree settings to match the seed
 	//void GenerateTileLevelFromSeed(int Seed);
