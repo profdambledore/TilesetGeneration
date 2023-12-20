@@ -36,7 +36,7 @@ void ATile::GetTileDoorPositions()
 		TArray<UTileDoorPosition*> TDP;
 		GetComponents<UTileDoorPosition>(TDP);
 
-		UE_LOG(LogTemp, Warning, TEXT("TileDoorPositions found : %i"), TDP.Num());
+		//UE_LOG(LogTemp, Warning, TEXT("TileDoorPositions found : %i"), TDP.Num());
 
 		// Then sort them into the maps
 		for (UTileDoorPosition* i : TDP) {
@@ -58,7 +58,7 @@ int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType)
 
 	if (indec.Num() > 0) {
 		int ran = FMath::RandRange(0, indec.Num() - 1);
-		UE_LOG(LogTemp, Warning, TEXT("%s"), *Doors[ran].Name.ToString());
+		//UE_LOG(LogTemp, Warning, TEXT("%s"), *Doors[ran].Name.ToString());
 		return indec[ran];
 	}
 	UE_LOG(LogTemp, Warning, TEXT("out of band"));

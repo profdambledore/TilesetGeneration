@@ -157,11 +157,11 @@ TSubclassOf<ATile> ATileManager::GetTileMatchingTag(FName Tag)
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Amount Found: %i"), FoundTiles.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("Amount Found: %i"), FoundTiles.Num());
 
 	// If at least one tag was found, get a random tile found
 	if (FoundTiles.Num() != 0) {
-		return FoundTiles[FMath::RandRange(0, FoundTiles.Num() - 1)];
+		return FoundTiles[SeedStream.RandRange(0, FoundTiles.Num() - 1)];
 	}
 
 	// Else, return null
@@ -188,11 +188,11 @@ TSubclassOf<ATile> ATileManager::GetTileMatchingDoor(TEnumAsByte<ETileDoorType> 
 		}
 	}
 
-	UE_LOG(LogTemp, Warning, TEXT("Amount Found: %i"), FoundTiles.Num());
+	//UE_LOG(LogTemp, Warning, TEXT("Amount Found: %i"), FoundTiles.Num());
 
 	// If at least one tag was found, get a random tile found
 	if (FoundTiles.Num() != 0) {
-		return FoundTiles[FMath::RandRange(0, FoundTiles.Num() - 1)];
+		return FoundTiles[SeedStream.RandRange(0, FoundTiles.Num() - 1)];
 	}
 
 	// Else, return null
