@@ -37,7 +37,7 @@ void ATileManager::Tick(float DeltaTime)
 
 void ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIndex)
 {
-	if ((GeneratedTree[CurrentNode].Depth + 1) <= MaxBranchLength) {
+	if ((GeneratedTree[CurrentNode].Depth + 1) <= TreeSettings.MaxBranchLength) {
 		// Spawn a new child tile with a matching door, add it to the tree and update the parent
 		ATile* ChildTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingDoor(DoorType), FVector(0.0f, 0.0f, 0.0f), FRotator());
 		AddTreeNode(ChildTile);
@@ -206,6 +206,16 @@ TSubclassOf<ATile> ATileManager::GetTileMatchingDoor(TEnumAsByte<ETileDoorType> 
 
 	// Else, return null
 	return NULL;
+}
+
+FTreeSettings ATileManager::GetTreeSettings()
+{
+	return TreeSettings;
+}
+
+void ATileManager::SetTreeSettings(FTreeSettings NewSettings)
+{
+	TreeSettings = NewSettings;
 }
 
 bool ATileManager::AddTreeNode(ATile* NewTile)

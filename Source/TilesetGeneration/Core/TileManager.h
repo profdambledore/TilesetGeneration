@@ -12,6 +12,7 @@
 #include "Core/Data/TileData.h"
 #include "Core/Data/TileNode.h"
 #include "Core/Data/TileDoorType.h"
+#include "Core/Data/TreeSettings.h"
 
 #include "TileManager.generated.h"
 
@@ -59,10 +60,10 @@ public:
 
 	/// -- Tree Settings --
 	// Called to return the current tree settings
-	//void GetTreeSettings();
+	FTreeSettings GetTreeSettings();
 
 	// Called to update the current tree settings
-	//void SetTreeSettings();
+	void SetTreeSettings(FTreeSettings NewSettings);
 
 	/// -- Tree Query --
 	// Called to add a new node to the level tree.  Returns true if a new node was created
@@ -109,9 +110,6 @@ public:
 	int CurrentBranchLength = 0;
 
 	/// -- Tree Data --
-	// The maximum branch length of the tree
-	int MaxBranchLength = 3;
-	// 
-	// The maximum amount of nodes in the tree
-	//int MaxNodes = 10; 
+	// Struct of Tree Settings
+	FTreeSettings TreeSettings = FTreeSettings(4, 10);
 };
