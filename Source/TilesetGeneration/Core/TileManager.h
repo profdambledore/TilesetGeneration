@@ -33,7 +33,7 @@ public:
 	void GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIndex);
 
 	// Called to genearte a level with the current tile setting.  Will not work if a level is already generated
-	void GenerateTileLevel();
+	void GenerateTileLevel(bool bGenerateNewSeed);
 
 	// Called to clear the current generated level.  Will not work if no level is generated
 	void ClearTileLevel();
@@ -42,7 +42,7 @@ public:
 	void RegenerateTileLevel();
 
 	// Called to generate a level via seed data.  Will update the tile and tree settings to match the seed
-	//void GenerateTileLevelFromSeed(int Seed);
+	void GenerateTileLevelFromSeed(int Seed);
 
 	/// -- Tile Settings --
 	// Called to return the current tile settings

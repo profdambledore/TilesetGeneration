@@ -23,8 +23,9 @@ void ATileManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	GenerateTileLevel();
+	GenerateTileLevel(true);
 	//ClearTileLevel();
+	//GenerateTileLevelFromSeed(21);
 }
 
 // Called every frame
@@ -82,17 +83,19 @@ void ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildIn
 	
 }
 
-void ATileManager::GenerateTileLevel()
+void ATileManager::GenerateTileLevel(bool bGenerateNewSeed)
 {
 	ATile* NewestTile = nullptr;
 	//ATile* ParentTile = nullptr;
 
 	UE_LOG(LogTemp, Warning, TEXT("Generating"));
 
-	// Make a new random seed
-	CurrentSeed = FMath::RandRange(0, 2000);
-	SeedStream = FRandomStream(CurrentSeed);
-
+	if (bGenerateNewSeed) {
+		// Make a new random seed
+		CurrentSeed = FMath::RandRange(0, 2000);
+		SeedStream = FRandomStream(CurrentSeed);
+	}
+	
 	if (TileDataTable) {
 		// First, create the starting tile
 		// Start by finding a tile with the "Start" tag
@@ -134,7 +137,13 @@ void ATileManager::ClearTileLevel()
 void ATileManager::RegenerateTileLevel()
 {
 	ClearTileLevel();
-	GenerateTileLevel();
+	GenerateTileLevel(false);
+}
+
+void ATileManager::GenerateTileLevelFromSeed(int Seed)
+{
+	SeedStream = FRandomStream(Seed);
+	GenerateTileLevel(false);
 }
 
 TSubclassOf<ATile> ATileManager::GetTileMatchingTag(FName Tag)
