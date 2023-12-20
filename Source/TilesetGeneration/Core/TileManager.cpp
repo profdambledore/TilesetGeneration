@@ -239,3 +239,20 @@ bool ATileManager::AddTreeNode(ATile* NewTile)
 	return false;
 }
 
+ATile* ATileManager::FindTileFromIndex(int IndexToFind)
+{
+	if (IndexToFind > -1 && IndexToFind < (GeneratedTree.Num())) {
+		return GeneratedTree[IndexToFind].Tile;
+	}
+	return nullptr;
+}
+
+int ATileManager::FindIndexFromTile(ATile* TileToFind)
+{
+	for (int i = 0; i < GeneratedTree.Num() - 1; i++) {
+		if (GeneratedTree[i].Tile == TileToFind) {
+			return i;
+		}
+	}
+	return -1;
+}

@@ -69,16 +69,11 @@ public:
 	// Called to add a new node to the level tree.  Returns true if a new node was created
 	bool AddTreeNode(ATile* NewTile);
 
-	// Called to remove a new node from the tree, as well as its children.  Returns true if the node was removed.
-	//bool RemoveTreeNode()
+	// Called to find a tile in the tree via an index.  Returns the node pointer, or null if no tile is found.
+	ATile* FindTileFromIndex(int IndexToFind);
 
-	// Called to clear the tree.
-	//void ClearTree();
-
-	// Called to find a node in the tree via an index.  Returns the node pointer, or null if no tile is found.
-	//NODEDATA* FindNodeFromIndex(int IndexToFind);
-
-	// Called to get the last used node.
+	// Called to find an index of a tile.  Returns the index, or -1 if the tile doesn't exist in the tree
+	int FindIndexFromTile(ATile* TileToFind);
 
 protected:
 	// Called when the game starts or when spawned
