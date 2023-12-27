@@ -46,12 +46,6 @@ public:
 	void GenerateTileLevelFromSeed(int Seed);
 
 	/// -- Tile Settings --
-	// Called to return the current tile settings
-	//void GetTileSettings();
-
-	// Called to update the current tile settings.  Will not regenerate the level.
-	//void SetTileSettings();
-
 	// Called to find a tile from the data table that contain a tag
 	TSubclassOf<ATile> GetTileMatchingTag(FName Tag);
 
@@ -74,7 +68,7 @@ public:
 
 	// Called to find an index of a tile.  Returns the index, or -1 if the tile doesn't exist in the tree
 	int FindIndexFromTile(ATile* TileToFind);
-
+	 
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
