@@ -25,6 +25,9 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<TEnumAsByte<ETileDoorType>> Doors;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector Size;
+
 	// Constructors / Destructors
 	FTileData();
 	~FTileData();

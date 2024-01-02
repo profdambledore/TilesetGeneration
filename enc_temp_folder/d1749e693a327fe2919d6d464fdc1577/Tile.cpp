@@ -45,7 +45,7 @@ void ATile::GetTileDoorPositions()
 	}
 }
 
-int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType, FRandomStream SeedStream)
+int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType)
 {
 	int MatchingDoors = 0;
 	TArray<int> indec;
@@ -57,7 +57,7 @@ int ATile::GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType, FRandomStr
 	}
 
 	if (indec.Num() > 0) {
-		int ran = SeedStream.RandRange(0, indec.Num() - 1);
+		int ran = FMath::RandRange(0, indec.Num() - 1);
 		//UE_LOG(LogTemp, Warning, TEXT("%s"), *Doors[ran].Name.ToString());
 		return indec[ran];
 	}

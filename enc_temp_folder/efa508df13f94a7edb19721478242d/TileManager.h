@@ -98,10 +98,7 @@ public:
 
 	int CurrentBranchLength = 0;
 
-	// Integar tracking the amount of tile spawn attempts
-	int SpawnAttempts = 0;
-
 	/// -- Tree Data --
 	// Struct of Tree Settings
-	FTreeSettings TreeSettings = FTreeSettings(4, 10, 3);
+	FTreeSettings TreeSettings = FTreeSettings(2, 10, 3);
 };

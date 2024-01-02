@@ -7,10 +7,11 @@ FTreeSettings::FTreeSettings()
 {
 }
 
-FTreeSettings::FTreeSettings(int NewBranchLength, int NewNodes)
+FTreeSettings::FTreeSettings(int NewBranchLength, int NewNodes, int NewNodeReroll)
 {
 	MaxBranchLength = NewBranchLength;
 	MaxNodes = NewNodes;
+	NodeRerolls = NewNodeReroll;
 }
 
 FTreeSettings::~FTreeSettings()

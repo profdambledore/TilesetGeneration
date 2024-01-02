@@ -25,9 +25,9 @@ void ATileManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//GenerateTileLevel(true);
+	GenerateTileLevel(true);
 	//ClearTileLevel();
-	GenerateTileLevelFromSeed(21);
+	//GenerateTileLevelFromSeed(21);
 }
 
 // Called every frame
@@ -47,7 +47,8 @@ int ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildInd
 		ATile* ChildTile = GetWorld()->SpawnActor<ATile>(FoundTile.Class, FVector(0.0f, 0.0f, 0.0f), FRotator());
 
 		// Get a random doorway in that tile that matches the current door type and connect it to the parent
-		int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType, SeedStream);
+		int DoorIndex = ChildTile->GetMatchingDoorPosition(DoorType);
+		GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
 
 		// Add the parent tile's offset to the new tile
 		ChildTile->AddActorLocalRotation(GeneratedTree[CurrentNode].Tile->GetActorRotation()); //GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetRelativeRotation()
@@ -85,18 +86,16 @@ int ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildInd
 
 		TArray<FHitResult> TraceResult;  TArray<AActor*> HitTiles;
 		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;  ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
-		TArray<AActor*, FDefaultAllocator> ObjectsToIgnore; ObjectsToIgnore.Add(this);  ObjectsToIgnore.Add(ChildTile); ObjectsToIgnore.Add(GeneratedTree[CurrentNode].Tile);
-		UKismetSystemLibrary::BoxOverlapActors(GetWorld(), ChildTile->GetActorLocation() + ChildTile->CollisionTestOrigin, ChildTile->CollisionTestBounds, ObjectTypes, ATile::StaticClass(), ObjectsToIgnore, HitTiles);
+		TArray<AActor*, FDefaultAllocator> ObjectsToIgnore; ObjectsToIgnore.Add(this);  ObjectsToIgnore.Add(ChildTile);
+		UKismetSystemLibrary::BoxOverlapActors(GetWorld(), ChildTile->GetActorLocation(), FoundTile.Size, ObjectTypes, ATile::StaticClass(), ObjectsToIgnore, HitTiles);
 
 		if (TraceResult.Num() == 0) {
 			AddTreeNode(ChildTile);
 			GeneratedTree[CurrentNode].Children[ChildIndex].IndexToTile = GeneratedTree.Num() - 1;
-			GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
 			return 1;
 		}
 		else {
 			ChildTile->Destroy();
-			SpawnAttempts++;
 			return -1;
 		}
 	}
@@ -130,9 +129,8 @@ void ATileManager::GenerateTileLevel(bool bGenerateNewSeed)
 			CurrentNode = i;
 			// For each child node of node i
 			for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
-				SpawnAttempts = 0;
 				// Generate a new tile
-				if (GeneratedTree[i].Children[j].IndexToTile == -1 && SpawnAttempts < TreeSettings.NodeRerolls) {
+				if (GeneratedTree[i].Children[j].IndexToTile == -1) {
 					GenerateNode(GeneratedTree[i].Children[j].Type, j);
 				}
 			}

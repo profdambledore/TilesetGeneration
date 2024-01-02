@@ -18,7 +18,10 @@ public:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int MaxNodes;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	int NodeRerolls;
+
 	FTreeSettings();
-	FTreeSettings(int NewBranchLength, int NewNodes);
+	FTreeSettings(int NewBranchLength, int NewNodes, int NewNodeReroll);
 	~FTreeSettings();
 };

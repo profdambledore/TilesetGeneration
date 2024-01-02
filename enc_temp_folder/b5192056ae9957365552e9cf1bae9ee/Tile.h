@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
 
-#include "Math/RandomStream.h"
-
 #include "Core/Data/TileDoorType.h"
 #include "Core/Data/DoorData.h"
 
@@ -33,7 +31,7 @@ public:
 	void GetTileDoorPositions();
 
 	// Called to return a random TileDoorPosition that matches an inputted door type
-	int GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType, FRandomStream SeedStream);
+	int GetMatchingDoorPosition(TEnumAsByte<ETileDoorType> InType);
 
 
 protected:
@@ -43,10 +41,4 @@ protected:
 public:	
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TArray<FDoorData> Doors;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector CollisionTestOrigin;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector CollisionTestBounds;
 };
