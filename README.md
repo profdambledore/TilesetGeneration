@@ -10,36 +10,42 @@
  ## Latest Update
 <table><tr><td valign="center" width="100%">
  
-### v0.13 - Collision and Seed Fix
+### v0.14 - Collision Update and Galleon Tileset
 -- TileManager --
 
-Updated GenerateNode to return an int
-- This was not actually used, so could be reverted
-Updated GetTile functions to return a FTileData struct
-- Could be reverted also, as the property added to the struct is stored else ware now
-When spawning a new child node, after being rotated and moved into position a collision overlap test is conducted. If something other then the child tile or the parent is overlapped by this collision box, the tile is deleted and rerolled
-- Updated FTreeSettings to now hold NodeRerolls, or how many times a tile can fail before the doorway it is to be connected too is not tried again.
+Changed the tileset found by FObjectFinder to the new Galleon Tileset
+Updated Overlap collision
+- Removed unneeded variables (TraceResult)
+- Removed ObjectTypeQuery1 from ObjectTypes
+- Replaced ActorClassFilter with NULL (filters no classes)
+- Replaced TraceHit.Num with HitTiles.Num
+-- As TraceResult was never being used, the overlap never got queried
 
--- Tile --
+Updated Tile Rerolls
+- Originally used a while look, but this caused the project to hang
+- Now uses a for loop, checking if the tile is still invalid each time a tile is created
 
-GetMatchingDoorPosition now takes in the SeedStream, so door positions are now affected by the seed
-Now has two new FVector properties for the location and size of the overlap box.
+-- Galleon Tileset --
 
--- TileData --
+Created 8 new tiles to show the project off
+Added a new data table for this tileset
+Merged meshes together to create new tile static meshes (only one mesh per tile now)
+Used implemented systems to setup the tiles (TileDoorPosition and CollisionTestOrigin/Bounds)
+</td></tr></tr></table> 
 
-Added FVector Size property
-- Was originally going to be stored here, but was moved to the Tile class for simplicity.
+## Overview Video
 
--- Tile Classes --
+<table><tr><td valign="center" width="100%">
+ 
+[![IMAGE ALT TEXT](http://img.youtube.com/vi/XMy0BoMvCBQ/0.jpg)](https://youtu.be/XMy0BoMvCBQ "Tileset Generator Overview") 
 
-Updated all classes to use the new Overlap box variables
 </td></tr></tr></table> 
 
  ## Assets Used:
 - Polygon Sci-Fi Space by SyntyStudios 
 
 ## Programs Used:
-- Unreal Engine 4.26 - Game Engine.
-- Visual Studio 2019 - Code Editing.
+- Unreal Engine 5.2 - Game Engine.
+- Visual Studio 2022 - Code Editing.
 - Overleaf with LaTeX - Document Creation
 - GitHub Desktop - Git Control. 
