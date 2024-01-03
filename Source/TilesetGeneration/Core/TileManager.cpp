@@ -15,7 +15,7 @@ ATileManager::ATileManager()
 	PrimaryActorTick.bCanEverTick = false;
 
 	// Get Data Table object and store it
-	ConstructorHelpers::FObjectFinder<UDataTable>DTObject(TEXT("/Game/Core/Tileset/DT_TileData"));
+	ConstructorHelpers::FObjectFinder<UDataTable>DTObject(TEXT("/Game/Galleion_Tileset/DT_GalleionTileset"));
 	if (DTObject.Succeeded()) { TileDataTable = DTObject.Object; }
 
 }
@@ -83,12 +83,14 @@ int ATileManager::GenerateNode(TEnumAsByte<ETileDoorType> DoorType, int ChildInd
 		// If the tile collides with nothing else, add the tile to the tree.  Else, destroy the tile and reroll.
 		ChildTile->AddActorWorldOffset(GeneratedTree[CurrentNode].Tile->Doors[ChildIndex].Object->GetComponentLocation() - ChildTile->Doors[DoorIndex].Object->GetComponentLocation());
 
-		TArray<FHitResult> TraceResult;  TArray<AActor*> HitTiles;
-		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;  ObjectTypes.Add(EObjectTypeQuery::ObjectTypeQuery1);
+		TArray<AActor*> HitTiles;
+		TArray<TEnumAsByte<EObjectTypeQuery>> ObjectTypes;
 		TArray<AActor*, FDefaultAllocator> ObjectsToIgnore; ObjectsToIgnore.Add(this);  ObjectsToIgnore.Add(ChildTile); ObjectsToIgnore.Add(GeneratedTree[CurrentNode].Tile);
-		UKismetSystemLibrary::BoxOverlapActors(GetWorld(), ChildTile->GetActorLocation() + ChildTile->CollisionTestOrigin, ChildTile->CollisionTestBounds, ObjectTypes, ATile::StaticClass(), ObjectsToIgnore, HitTiles);
+		UKismetSystemLibrary::BoxOverlapActors(GetWorld(), ChildTile->GetActorLocation() + ChildTile->CollisionTestOrigin, ChildTile->CollisionTestBounds, ObjectTypes, NULL, ObjectsToIgnore, HitTiles);
 
-		if (TraceResult.Num() == 0) {
+		UE_LOG(LogTemp, Warning, TEXT("We overlapped %i actors at tile %i, doorway %i"), HitTiles.Num(), CurrentNode, ChildIndex);
+
+		if (HitTiles.Num() == 0) {
 			AddTreeNode(ChildTile);
 			GeneratedTree[CurrentNode].Children[ChildIndex].IndexToTile = GeneratedTree.Num() - 1;
 			GeneratedTree[GeneratedTree.Num() - 1].Children[DoorIndex].IndexToTile = CurrentNode;
@@ -119,7 +121,7 @@ void ATileManager::GenerateTileLevel(bool bGenerateNewSeed)
 	
 	if (TileDataTable) {
 		// First, create the starting tile
-		// Start by finding a tile with the "Start" tag
+		// Start by finding a tile with the "Spawn" tag
 		NewestTile = GetWorld()->SpawnActor<ATile>(GetTileMatchingTag(FName("Spawn")).Class, FVector(0.0f, 0.0f, 0.0f), FRotator(0.0f, 0.0f, 0.0f));
 		AddTreeNode(NewestTile);
 
@@ -130,10 +132,12 @@ void ATileManager::GenerateTileLevel(bool bGenerateNewSeed)
 			CurrentNode = i;
 			// For each child node of node i
 			for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
-				SpawnAttempts = 0;
+				//SpawnAttempts = 0;
 				// Generate a new tile
-				if (GeneratedTree[i].Children[j].IndexToTile == -1 && SpawnAttempts < TreeSettings.NodeRerolls) {
-					GenerateNode(GeneratedTree[i].Children[j].Type, j);
+				for (int k = 0; k < TreeSettings.NodeRerolls; k++) {
+					if (GeneratedTree[i].Children[j].IndexToTile == -1) {
+						GenerateNode(GeneratedTree[i].Children[j].Type, j);
+					}
 				}
 			}
 		}
