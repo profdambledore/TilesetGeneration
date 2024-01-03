@@ -25,9 +25,9 @@ void ATileManager::BeginPlay()
 {
 	Super::BeginPlay();
 
-	//GenerateTileLevel(true);
+	GenerateTileLevel(true);
 	//ClearTileLevel();
-	GenerateTileLevelFromSeed(21);
+	//GenerateTileLevelFromSeed(21);
 }
 
 // Called every frame
@@ -130,16 +130,19 @@ void ATileManager::GenerateTileLevel(bool bGenerateNewSeed)
 		// For each node in the tree
 		for (int i = 0; i < GeneratedTree.Num(); i++) { //GeneratedTree.Num()
 			CurrentNode = i;
-			// For each child node of node i
-			for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
-				//SpawnAttempts = 0;
-				// Generate a new tile
-				for (int k = 0; k < TreeSettings.NodeRerolls; k++) {
-					if (GeneratedTree[i].Children[j].IndexToTile == -1) {
-						GenerateNode(GeneratedTree[i].Children[j].Type, j);
+			if (GeneratedTree.Num() <= TreeSettings.MaxNodes) {
+				// For each child node of node i
+				for (int j = 0; j < GeneratedTree[i].Children.Num(); j++) {
+					//SpawnAttempts = 0;
+					// Generate a new tile
+					for (int k = 0; k < TreeSettings.NodeRerolls; k++) {
+						if (GeneratedTree[i].Children[j].IndexToTile == -1) {
+							GenerateNode(GeneratedTree[i].Children[j].Type, j);
+						}
 					}
 				}
 			}
+			
 		}
 	}
 }
