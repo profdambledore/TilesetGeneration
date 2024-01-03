@@ -103,5 +103,5 @@ public:
 
 	/// -- Tree Data --
 	// Struct of Tree Settings
-	FTreeSettings TreeSettings = FTreeSettings(4, 10, 3);
+	FTreeSettings TreeSettings = FTreeSettings(9, 20, 3);
 };
